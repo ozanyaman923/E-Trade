@@ -1,10 +1,14 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Validation;
+using Core.CrossCuttingConcern.Validation;
 using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +21,18 @@ namespace Business.Concrete
     {
         IProductDal _productDal;
         ICategoryDal _categoryDal;
-        public ProductManager(IProductDal productDal, ICategoryDal categoryDal)
+        
+        public ProductManager(IProductDal productDal,ICategoryDal categoryDal)
         {
             _productDal = productDal;
-            _categoryDal = categoryDal;              
+            _categoryDal = categoryDal;
+                       
         }
+
+        [ValidationAspect(typeof(ProductValidator))]
         public IResult Add(Product product)
         {
+
             IResult result = BusinessRules.Run(CheckAdded(product.ProductName));
             if(result != null)
             {
@@ -49,24 +58,24 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Product>>(_productDal.GetAll(), Messages.ProductsListed);
         }
 
-        public IDataResult<List<Product>> GetAllByCategoryId(int categoryId)
+        public IDataResult<List<Product>> GetByCategoryId(int categoryId)
         {
-            throw new NotImplementedException();
+            return new SuccessDataResult<List<Product>>(_productDal.GetAll(p=>p.CategoryId==categoryId),Messages.ProductsListed);
         }
 
         public IDataResult<Product> GetById(int productId)
         {
-            throw new NotImplementedException();
+            return new SuccessDataResult<Product>(_productDal.Get(p=>p.ProductId==productId));
         }
 
         public IDataResult<List<Product>> GetByUnitPrice(decimal min, decimal max)
         {
-            throw new NotImplementedException();
+            return new SuccessDataResult<List<Product>>(_productDal.GetAll(p => p.UnitPrice >= min &&  p.UnitPrice<=max ));
         }
 
         public IDataResult<List<ProductDetailDto>> GetProductDetails()
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException();    
         }
         private IResult CheckAdded(string productName)
         {

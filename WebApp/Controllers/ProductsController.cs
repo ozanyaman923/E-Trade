@@ -6,15 +6,41 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp.Controllers
 {
-    public class ProductController : Controller
+    public class ProductsController : Controller
     {
         IProductService _productService;
 
-        public ProductController(IProductService productService)
+        public ProductsController(IProductService productService)
         {
             _productService = productService;
         }
-        
+        [HttpGet("GetId")]
+        public IActionResult GetId(int productId)
+        {
+            
+
+            var result = _productService.GetById(productId);
+            if(result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+
+        }
+        [HttpGet("GetCategoryId")]
+        public IActionResult GetAll(int categoryId)
+        {
+           
+       
+
+            var result = _productService.GetByCategoryId(categoryId);
+            if(result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+
+        }
         [HttpGet("GetAll")]
         public IActionResult GetAll()
         {
@@ -32,7 +58,7 @@ namespace WebApp.Controllers
 
         }
         [HttpPost("add")]
-        public IActionResult Add(Product product)
+        public IActionResult Add([FromBody]Product product)
         {
             var result = _productService.Add(product);
             if(result.Success)
