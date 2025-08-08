@@ -2,6 +2,7 @@
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Entities.DTOs.Category;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,12 @@ namespace Business.Concrete
         {
             _categoryDal = categoryDal;
         }
+
+        public IResult Add(CategoryCreateDto dto)
+        {
+            return new SuccessResult(_categoryDal.Add(dto));
+        }
+
         public IDataResult<List<Category>> GetAll()
         {
             return new SuccessDataResult<List<Category>>(_categoryDal.GetAll());

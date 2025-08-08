@@ -1,7 +1,7 @@
 ﻿using Business.Abstract;
 using Core.Utilities.Results;
 using Entities.Concrete;
-using Entities.DTOs;
+using Entities.DTOs.Product;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApp.Controllers
@@ -14,6 +14,14 @@ namespace WebApp.Controllers
         {
             _productService = productService;
         }
+
+        [HttpGet("GetProducts")]
+        public IActionResult GetProducts()
+        {
+            var products = _productService.GetProducts();
+            return Ok(products);
+        }
+
         [HttpGet("GetId")]
         public IActionResult GetId(int productId)
         {
@@ -58,9 +66,9 @@ namespace WebApp.Controllers
 
         }
         [HttpPost("add")]
-        public IActionResult Add([FromBody]Product product)
+        public IActionResult Add([FromBody]ProductCreateDto dto)
         {
-            var result = _productService.Add(product);
+            var result = _productService.Add(dto);
             if(result.Success)
             {
                 return Ok(result);
@@ -79,7 +87,7 @@ namespace WebApp.Controllers
             }
             return BadRequest(result);
         }
-        [HttpPut("update")]
+        [HttpPut("update{id}")]
         public IActionResult Update(ProductUpdateDto dto)
         {
             var result = _productService.Update(dto);

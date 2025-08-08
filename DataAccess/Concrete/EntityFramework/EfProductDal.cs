@@ -2,6 +2,8 @@
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
+using Entities.DTOs.Product;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,23 +14,24 @@ namespace DataAccess.Concrete.EntityFramework
 {
     public class EfProductDal : EfEntityRepositoryBase<Product, ProfessionalProjectContext>, IProductDal
     {
-        public List<ProductDetailDto> GetProductDetails()
+        private readonly ProfessionalProjectContext _context;
+
+        public EfProductDal(ProfessionalProjectContext context)
         {
-            using(ProfessionalProjectContext context = new ProfessionalProjectContext())
-            {
-                var result = from p in context.Products
-                             join c in context.Categories
-                             on p.CategoryId equals c.CategoryId
-                             select new ProductDetailDto
-                             {
-                                 ProductId = p.ProductId,
-                                 ProductName = p.ProductName,
-                                 CategoryId = c.CategoryId,
-                                 UnitPrice = p.UnitPrice,
-                                 UnitsInStock = p.UnitsInStock
-                             };
-                return result.ToList();
-            }
+            _context = context;
+        }
+
+        public List<ProductDetailDto> GetProducts()
+        {
+            return _context.Products
+                .Include(p => p.Category)
+                .Select(p => new ProductDetailDto
+                {
+                    ProductName = p.ProductName,
+                    CategoryName = p.Category.CategoryName
+                    
+                })
+                .ToList();
         }
     }
 }

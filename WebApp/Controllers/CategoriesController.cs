@@ -10,10 +10,7 @@ namespace WebApp.Controllers
         {
             _categoryService = categoryService;
         }
-        public IActionResult GetAll()
-        {
-
-        }
+      
      
     }   
 }

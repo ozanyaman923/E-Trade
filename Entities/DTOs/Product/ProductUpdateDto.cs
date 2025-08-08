@@ -4,14 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entities.DTOs
+namespace Entities.DTOs.Product
 {
     public class ProductUpdateDto
     {
-        public int ProductId { get; set; }
-        public string ProductName { get; set; }
+        public int Id { get; set; } // Güncellenecek ürünün ID'si
+        public string Name { get; set; }
+        public decimal Price { get; set; }
         public int CategoryId { get; set; }
-        public short UnitsInStock { get; set; }
-        public decimal UnitPrice { get; set; }
     }
 }
